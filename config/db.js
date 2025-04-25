@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 let connectDb = function (uri) {
     mongoose.connect(uri)
@@ -6,4 +6,4 @@ let connectDb = function (uri) {
         .catch(err => console.error(`Db error: ${err}`));
 }
 
-export default connectDb;
+module.exports = { connectDb };

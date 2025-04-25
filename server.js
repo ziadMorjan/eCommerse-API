@@ -1,6 +1,6 @@
-import app from "./app.js";
-import dotenv from "dotenv";
-import connectDb from "./config/db.js";
+const app = require("./app");
+const dotenv = require("dotenv");
+const db = require("./config/db");
 
 dotenv.config({ path: "./config.env" });
 
@@ -13,6 +13,6 @@ let server = app.listen(port, () => {
     console.log(`Server started at http://${host}:${port}`);
 });
 
-connectDb(process.env.DB_URI);
+db.connectDb(process.env.DB_URI);
 
-export default server;
+module.exports = server;
