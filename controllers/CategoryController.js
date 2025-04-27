@@ -1,7 +1,7 @@
 const Category = require("../models/Category");
 const CustomError = require("../utils/CustomError");
 const QueryManipulater = require("../utils/QueryManipulater");
-const { asyncErrorHandler } = require("../middlewares/ErrorMiddleware");
+const { asyncErrorHandler } = require("../middlewares/errorMiddleware");
 const { default: slugify } = require("slugify");
 
 let getCategories = asyncErrorHandler(async function (req, res) {
@@ -39,8 +39,6 @@ let createCategory = asyncErrorHandler(async function (req, res) {
 });
 
 let getCategory = asyncErrorHandler(async function (req, res) {
-    console.log(req.params);
-
     let category = await Category.findById(req.params.id);
 
     if (!category)
@@ -55,12 +53,10 @@ let getCategory = asyncErrorHandler(async function (req, res) {
 });
 
 let updateCategory = asyncErrorHandler(async function (req, res) {
-    let { name } = req.body;
-    let updatedCategory = await Category.findByIdAndUpdate(req.params.id,
-        {
-            ...req.body,
-            slug: slugify(name)
-        },
+    let bodyToUpdate = req.body;
+    if (req.body.name)
+        req.body.slug = slugify(req.body.name);
+    let updatedCategory = await Category.findByIdAndUpdate(req.params.id, bodyToUpdate,
         {
             runValidators: true,
             new: true

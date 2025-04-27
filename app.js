@@ -3,7 +3,7 @@ const morgan = require("morgan");
 
 const CategoriesRoutes = require("./routes/CategoriesRoutes");
 const DefaultRoute = require("./routes/DefaultRoute");
-const { globalErrorHandler } = require("./middlewares/ErrorMiddleware");
+const { globalErrorHandler } = require("./middlewares/errorMiddleware");
 
 let app = express();
 
