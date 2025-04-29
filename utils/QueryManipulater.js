@@ -2,15 +2,15 @@ module.exports = class QueryManipulater {
     constructor(req, model) {
         this.req = req;
         this.model = model;
-        this.query;
     }
+
     filter() {
         let reqQueryStr = JSON.stringify(this.req.query);
         if (!reqQueryStr.includes("$"))
             reqQueryStr = reqQueryStr.replace(/(gte|gt|lte|lt|ne)/, match => `$${match}`);
 
         let filter = JSON.parse(reqQueryStr);
-        ["sort", "select", "page", "limit", "skip"].map(val => {
+        ["sort", "select", "page", "limit", "skip"].forEach(val => {
             if (filter[val])
                 delete filter[val];
         });
@@ -18,6 +18,7 @@ module.exports = class QueryManipulater {
         this.query = this.model.find(filter);
         return this;
     }
+
     limit() {
         let select;
         if (this.req.query.select)
@@ -27,6 +28,7 @@ module.exports = class QueryManipulater {
         this.query = this.query.select(select);
         return this;
     }
+
     sort() {
         let sort;
         if (this.req.query.sort)
@@ -36,6 +38,7 @@ module.exports = class QueryManipulater {
         this.query = this.query.sort(sort);
         return this;
     }
+
     paginate() {
         let page = +this.req.query.page || 1;
         let limit = +this.req.query.limit || Infinity;

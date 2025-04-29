@@ -15,7 +15,11 @@ const {
     deleteCategory
 } = require("../controllers/CategoryController");
 
-let router = express.Router();
+const subCategoriesRoutes = require("./SubCategoriesRoutes");
+
+let router = express.Router({ mergeParams: true });
+
+router.use("/:categoryId/subCategories", subCategoriesRoutes);
 
 router.route("/")
     .get(getCategories)
@@ -25,5 +29,6 @@ router.route("/:id")
     .get(getCategoryValidator, getCategory)
     .patch(updateCategoryValidator, updateCategory)
     .delete(deleteCategoryValidator, deleteCategory);
+
 
 module.exports = router;
