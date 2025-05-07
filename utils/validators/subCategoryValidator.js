@@ -1,5 +1,6 @@
 const validator = require("express-validator");
 const validationMiddleware = require("../../middlewares/validationMiddleware");
+const Category = require("../../models/Category");
 
 let getSubCategoryValidator = [
     validator.check("id")
@@ -14,15 +15,24 @@ let createSubCategoryValidator = [
         .isLength({ min: 3 }).withMessage("subCategory name must be larger than 3")
         .isLength({ max: 32 }).withMessage("subCategory name must be less than 32"),
 
-    validator.oneOf([
-        validator.check("category")
-            .notEmpty().withMessage("SubCategory must belong to parent category")
-            .isMongoId().withMessage("Invalid SubCategory ID format"),
+    validator.check("category")
+        .notEmpty().withMessage("SubCategory must belong to parent category")
+        .isMongoId().withMessage("Invalid SubCategory ID format")
+        .custom(async (categoryID) => {
+            let category = await Category.findById(categoryID);
+            if (!category)
+                throw new Error("The provided category is not exist in the db.");
+        }),
 
-        validator.check("categoryId")
-            .notEmpty().withMessage("SubCategory must belong to parent category")
-            .isMongoId().withMessage("Invalid SubCategory ID format")
-    ]),
+    validator.check("categoryId")
+        .optional()
+        .notEmpty().withMessage("SubCategory must belong to parent category")
+        .isMongoId().withMessage("Invalid SubCategory ID format")
+        .custom(async (categoryID) => {
+            let category = await Category.findById(categoryID);
+            if (!category)
+                throw new Error("The provided category is not exist in the db.");
+        }),
 
     validationMiddleware
 ]
@@ -38,7 +48,12 @@ let updateSubCategoryValidator = [
 
     validator.check("category").optional()
         .notEmpty().withMessage("SubCategory must belong to parent category")
-        .isMongoId().withMessage("Invalid SubCategory ID format"),
+        .isMongoId().withMessage("Invalid SubCategory ID format")
+        .custom(async (categoryID) => {
+            let category = await Category.findById(categoryID);
+            if (!category)
+                throw new Error("The provided category is not exist in the db.");
+        }),
 
     validationMiddleware
 ]

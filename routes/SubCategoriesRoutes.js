@@ -1,5 +1,9 @@
 const express = require("express");
 const {
+    addCategoryIdToReqBody,
+    addFilterToReqBody
+} = require("../middlewares/subCategoryMiddleware")
+const {
     getSubCategoryValidator,
     createSubCategoryValidator,
     updateSubCategoryValidator,
@@ -17,12 +21,28 @@ const {
 let router = express.Router({ mergeParams: true });
 
 router.route("/")
-    .get(getSubCategories)
-    .post(createSubCategoryValidator, createSubCategory);
+    .get(
+        addFilterToReqBody,
+        getSubCategories
+    )
+    .post(
+        addCategoryIdToReqBody,
+        createSubCategoryValidator,
+        createSubCategory
+    );
 
 router.route("/:id")
-    .get(getSubCategoryValidator, getSubCategory)
-    .patch(updateSubCategoryValidator, updateSubCategory)
-    .delete(deleteSubCategoryValidator, deleteSubCategory);
+    .get(
+        getSubCategoryValidator,
+        getSubCategory
+    )
+    .patch(
+        updateSubCategoryValidator,
+        updateSubCategory
+    )
+    .delete(
+        deleteSubCategoryValidator,
+        deleteSubCategory
+    );
 
 module.exports = router;

@@ -7,10 +7,10 @@ module.exports = class QueryManipulater {
     filter() {
         let reqQueryStr = JSON.stringify(this.req.query);
         if (!reqQueryStr.includes("$"))
-            reqQueryStr = reqQueryStr.replace(/(gte|gt|lte|lt|ne)/, match => `$${match}`);
+            reqQueryStr = reqQueryStr.replace(/\b(gte|gt|lte|lt|ne)\b/g, match => `$${match}`);
 
         let filter = JSON.parse(reqQueryStr);
-        ["sort", "select", "page", "limit", "skip"].forEach(val => {
+        ["sort", "select", "keyword", "page", "limit", "skip"].forEach(val => {
             if (filter[val])
                 delete filter[val];
         });
@@ -34,8 +34,21 @@ module.exports = class QueryManipulater {
         if (this.req.query.sort)
             sort = this.req.query.sort.split(",").join(" ");
         else
-            sort = "createdAt";
+            sort = "-createdAt";
         this.query = this.query.sort(sort);
+        return this;
+    }
+
+    search() {
+        if (this.req.query.keyword) {
+            let filter = {}
+            filter.$or = [
+                { name: { $regex: this.req.query.keyword, $options: "i" } },
+                { description: { $regex: this.req.query.keyword, $options: "i" } }
+            ];
+            this.query = this.query.find(filter);
+        }
+
         return this;
     }
 

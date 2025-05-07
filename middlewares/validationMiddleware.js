@@ -3,6 +3,7 @@ const CustomError = require("../utils/CustomError");
 
 let validationMiddleware = function (req, res, next) {
     let errors = validationResult(req);
+    console.log(errors.array());
     if (!errors.isEmpty()) {
         let message = errors.array().map(obj => obj.msg).join(" ");
         throw new CustomError(message, 400);
