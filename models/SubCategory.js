@@ -25,4 +25,17 @@ let subCategorySchema = new mongoose.Schema(
     }
 );
 
+
+let setImageUrl = function (doc) {
+    if (doc.photo) {
+        let url = `${process.env.BASE_URL}/subCategories/${doc.photo}`;
+        doc.photo = url;
+    }
+};
+
+subCategorySchema.post("init", doc => setImageUrl(doc));
+
+subCategorySchema.post("save", doc => setImageUrl(doc));
+
+
 module.exports = mongoose.model("SubCategory", subCategorySchema);

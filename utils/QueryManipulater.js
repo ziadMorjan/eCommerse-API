@@ -41,6 +41,9 @@ module.exports = class QueryManipulater {
 
     search() {
         if (this.req.query.keyword) {
+            if (Array.isArray(this.req.query.keyword)) {
+                this.req.query.keyword = this.req.query.keyword.join(" ");
+            }
             let filter = {}
             filter.$or = [
                 { name: { $regex: this.req.query.keyword, $options: "i" } },

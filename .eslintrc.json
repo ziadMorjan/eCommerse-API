@@ -19,6 +19,7 @@
     "no-unused-vars": ["warn", { "argsIgnorePattern": "req|res|next|val" }],
     "prefer-const": "off",
     "prefer-arrow-callback": "off",
-    "eqeqeq": "off"
+    "eqeqeq": "off",
+    "import/newline-after-import": "off"
   }
 }

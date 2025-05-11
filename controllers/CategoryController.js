@@ -1,4 +1,7 @@
+const crypto = require("crypto");
+const sharp = require("sharp");
 const Category = require("../models/Category");
+const { asyncErrorHandler } = require("../middlewares/errorMiddleware");
 const {
     getAll,
     getOne,
@@ -6,6 +9,26 @@ const {
     updateOne,
     deleteOne
 } = require("./Controller");
+const {
+    uploadSingleImage
+} = require("../middlewares/uploadImagesMiddleware")
+
+let uploadImage = uploadSingleImage("photo");
+
+let resizeImage = asyncErrorHandler(async function (req, res, next) {
+    let unique = crypto.randomBytes(9).toString("hex");
+    let fileName = `category-${unique}-${Date.now()}.jpeg`;
+    if (req.file) {
+        await sharp(req.file.buffer)
+            .resize(600, 600)
+            .toFormat('jpeg')
+            .jpeg({ quality: 90 })
+            .toFile(`uploads/categories/${fileName}`);
+
+        req.body.photo = fileName;
+    }
+    next();
+});
 
 let getCategories = getAll(Category);
 
@@ -22,5 +45,7 @@ module.exports = {
     createCategory,
     getCategory,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    uploadImage,
+    resizeImage
 };

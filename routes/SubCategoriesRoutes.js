@@ -15,7 +15,9 @@ const {
     createSubCategory,
     getSubCategory,
     updateSubCategory,
-    deleteSubCategory
+    deleteSubCategory,
+    uploadImage,
+    resizeImage
 } = require("../controllers/SubCategoriesController");
 
 let router = express.Router({ mergeParams: true });
@@ -26,6 +28,8 @@ router.route("/")
         getSubCategories
     )
     .post(
+        uploadImage,
+        resizeImage,
         addCategoryIdToReqBody,
         createSubCategoryValidator,
         createSubCategory
@@ -37,6 +41,8 @@ router.route("/:id")
         getSubCategory
     )
     .patch(
+        uploadImage,
+        resizeImage,
         updateSubCategoryValidator,
         updateSubCategory
     )

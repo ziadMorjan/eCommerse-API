@@ -1,3 +1,5 @@
+const path = require("path")
+
 const express = require("express");
 const morgan = require("morgan");
 
@@ -10,9 +12,11 @@ const { globalErrorHandler } = require("./middlewares/errorMiddleware");
 
 let app = express();
 
+
 // middlewares
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(express.static("uploads"));
 
 // routes
 app.use("/api/v1/categories", CategoriesRoutes);
