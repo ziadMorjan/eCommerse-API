@@ -38,6 +38,8 @@ let ValidationError = error => {
 
 let CastError = error => new CustomError(`Invalid ${error.path}: ${error.value}`, 400);
 
+let JsonWebTokenError = () => new CustomError(`Invalid token`, 400);
+
 
 let asyncErrorHandler = function (asyncFn) {
     return (req, res, next) => {
@@ -56,6 +58,7 @@ let globalErrorHandler = function (error, req, res, next) {
         if (error.code === 11000) error = duplicateKeyError(error);
         if (error.name === "ValidationError") error = ValidationError(error);
         if (error.name === "CastError") CastError(error);
+        if (error.name === "JsonWebTokenError") JsonWebTokenError(error);
 
         prodErrors(res, error);
     }

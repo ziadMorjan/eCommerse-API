@@ -16,12 +16,18 @@ const {
     uploadMixImages,
     resizeMixImages
 } = require("../controllers/ProductController");
+const {
+    allowedTo,
+    protect
+} = require("../middlewares/authMiddleware");
 
 let router = express.Router();
 
 router.route("/")
     .get(getProducts)
     .post(
+        protect,
+        allowedTo("admin"),
         uploadMixImages,
         resizeMixImages,
         createProductValidator,
@@ -31,11 +37,18 @@ router.route("/")
 router.route("/:id")
     .get(getProductValidator, getProduct)
     .patch(
+        protect,
+        allowedTo("admin"),
         uploadMixImages,
         resizeMixImages,
         updateProductValidator,
         updateProduct
     )
-    .delete(deleteProductValidator, deleteProduct);
+    .delete(
+        protect,
+        allowedTo("admin"),
+        deleteProductValidator,
+        deleteProduct
+    );
 
 module.exports = router;

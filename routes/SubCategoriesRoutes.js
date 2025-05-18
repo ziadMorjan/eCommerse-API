@@ -19,6 +19,7 @@ const {
     uploadImage,
     resizeImage
 } = require("../controllers/SubCategoriesController");
+const { protect, allowedTo } = require("../middlewares/authMiddleware");
 
 let router = express.Router({ mergeParams: true });
 
@@ -28,6 +29,8 @@ router.route("/")
         getSubCategories
     )
     .post(
+        protect,
+        allowedTo("admin"),
         uploadImage,
         resizeImage,
         addCategoryIdToReqBody,
@@ -41,12 +44,16 @@ router.route("/:id")
         getSubCategory
     )
     .patch(
+        protect,
+        allowedTo("admin"),
         uploadImage,
         resizeImage,
         updateSubCategoryValidator,
         updateSubCategory
     )
     .delete(
+        protect,
+        allowedTo("admin"),
         deleteSubCategoryValidator,
         deleteSubCategory
     );

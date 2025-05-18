@@ -1,5 +1,4 @@
 const express = require("express");
-
 const {
     getCategoryValidator,
     createCategoryValidator,
@@ -18,6 +17,10 @@ const {
 } = require("../controllers/CategoryController");
 
 const subCategoriesRoutes = require("./SubCategoriesRoutes");
+const {
+    protect,
+    allowedTo
+} = require("../middlewares/authMiddleware");
 
 let router = express.Router({ mergeParams: true });
 
@@ -26,6 +29,8 @@ router.use("/:categoryId/subCategories", subCategoriesRoutes);
 router.route("/")
     .get(getCategories)
     .post(
+        protect,
+        allowedTo("admin"),
         uploadImage,
         resizeImage,
         createCategoryValidator,
@@ -38,12 +43,16 @@ router.route("/:id")
         getCategory
     )
     .patch(
+        protect,
+        allowedTo("admin"),
         uploadImage,
         resizeImage,
         updateCategoryValidator,
         updateCategory
     )
     .delete(
+        protect,
+        allowedTo("admin"),
         deleteCategoryValidator,
         deleteCategory
     );

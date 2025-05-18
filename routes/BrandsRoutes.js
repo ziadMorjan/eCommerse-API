@@ -17,11 +17,18 @@ const {
     resizeImage
 } = require("../controllers/BrandController");
 
+const {
+    protect,
+    allowedTo
+} = require("../middlewares/authMiddleware");
+
 let router = express.Router();
 
 router.route("/")
     .get(getAllBrands)
     .post(
+        protect,
+        allowedTo("admin"),
         uploadImage,
         resizeImage,
         createBrandValidator,
@@ -31,11 +38,18 @@ router.route("/")
 router.route("/:id")
     .get(getBrandValidator, getBrand)
     .patch(
+        protect,
+        allowedTo("admin"),
         uploadImage,
         resizeImage,
         updateBrandValidator,
         updateBrand
     )
-    .delete(deleteBrandValidator, deleteBrand);
+    .delete(
+        protect,
+        allowedTo("admin"),
+        deleteBrandValidator,
+        deleteBrand
+    );
 
 module.exports = router;
