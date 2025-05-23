@@ -41,9 +41,14 @@ let createOne = function (model) {
     });
 }
 
-let getOne = function (model, modelName = "") {
+let getOne = function (model, modelName = "", populateOption = "") {
     return asyncErrorHandler(async function (req, res) {
-        let doc = await model.findById(req.params.id);
+        let query = model.findById(req.params.id);
+
+        if (populateOption)
+            query.populate(populateOption);
+
+        let doc = await query;
 
         if (!doc)
             throw new CustomError(`There is no ${modelName} with id : ${req.params.id}`, 404);
@@ -71,6 +76,8 @@ let updateOne = function (model, modelName) {
         if (!updatedDoc)
             throw new CustomError(`There is no ${modelName} with id : ${req.params.id}`, 404);
 
+        updatedDoc.save();
+
         res.status(200).json({
             status: "success",
             data: {
@@ -82,7 +89,7 @@ let updateOne = function (model, modelName) {
 
 let deleteOne = function (model, modelName = "") {
     return asyncErrorHandler(async function (req, res) {
-        let deletedDoc = await model.findByIdAndDelete(req.params.id);
+        let deletedDoc = await model.findOneAndDelete(req.params.id);
 
         if (!deletedDoc)
             throw new CustomError(`There is no ${modelName} with id: ${req.params.id}`, 404);

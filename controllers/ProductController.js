@@ -66,7 +66,7 @@ let getProducts = getAll(Product);
 
 let createProduct = createOne(Product);
 
-let getProduct = getOne(Product, "product");
+let getProduct = getOne(Product, "product", "reviews");
 
 let updateProduct = updateOne(Product, "product");
 

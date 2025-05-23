@@ -33,6 +33,8 @@ let login = asyncErrorHandler(async function (req, res) {
     if (!user || !bcryptjs.compareSync(password, user.password))
         throw new CustomError("Email or password is wrong", 400);
 
+    if (!user.isActive)
+        throw new CustomError("Your account has been deactivated", 403);
 
     let token = createToken(user.id);
 

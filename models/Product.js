@@ -59,15 +59,20 @@ let productSchema = new mongoose.Schema(
         },
         avgRatings: {
             type: Number,
-            min: 1,
-            max: 5
+            min: 0,
+            max: 5,
+            default: 0
         },
         ratingsQuantity: {
             type: Number,
             default: 0
         }
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
+    }
 );
 
 productSchema.pre(/^find/, function (next) {
@@ -86,14 +91,21 @@ productSchema.pre(/^find/, function (next) {
     next()
 });
 
-
 let setImageUrl = function (doc) {
     if (doc.coverImage) {
-        let url = `${process.env.BASE_URL}/products/${doc.coverImage}`;
-        doc.coverImage = url;
+        if (!doc.coverImage.startsWith("http")) {
+            let url = `${process.env.BASE_URL}/products/${doc.coverImage}`;
+            doc.coverImage = url;
+        }
     }
     if (doc.images) {
-        doc.images = doc.images.map(image => `${process.env.BASE_URL}/products/${image}`);
+        doc.images = doc.images.map(image => {
+            if (!image.startsWith("http")) {
+                let url = `${process.env.BASE_URL}/products/${image}`;
+                return url;
+            }
+            return image;
+        });
     }
 };
 
@@ -101,5 +113,10 @@ productSchema.post("init", doc => setImageUrl(doc));
 
 productSchema.post("save", doc => setImageUrl(doc));
 
+productSchema.virtual("reviews", {
+    ref: "Review",
+    foreignField: "product",
+    localField: "_id"
+});
 
 module.exports = mongoose.model("Product", productSchema);

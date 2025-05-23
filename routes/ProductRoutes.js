@@ -16,12 +16,17 @@ const {
     uploadMixImages,
     resizeMixImages
 } = require("../controllers/ProductController");
+
 const {
     allowedTo,
     protect
 } = require("../middlewares/authMiddleware");
 
+const reviewsRoutes = require("./ReviewRoutes");
+
 let router = express.Router();
+
+router.use("/:productId/reviews", reviewsRoutes);
 
 router.route("/")
     .get(getProducts)
