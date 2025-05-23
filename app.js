@@ -8,6 +8,7 @@ const productRoutes = require("./routes/ProductRoutes");
 const userRoutes = require("./routes/UserRoutes");
 const authRoutes = require("./routes/AuthRouts");
 const reviewsRoutes = require("./routes/ReviewRoutes");
+const wishlistRoutes = require("./routes/WishlistRouts");
 const DefaultRoute = require("./routes/DefaultRoute");
 const { globalErrorHandler } = require("./middlewares/errorMiddleware");
 
@@ -26,6 +27,7 @@ app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/reviews", reviewsRoutes);
+app.use("/api/v1/wishlist", wishlistRoutes);
 
 // default route
 app.use(DefaultRoute)

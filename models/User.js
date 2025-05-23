@@ -35,6 +35,10 @@ let userSchema = new mongoose.Schema(
             enum: ['admin', 'user'],
             default: 'user',
         },
+        wishlist: [{
+            type: mongoose.Types.ObjectId,
+            ref: "Product"
+        }],
         passwordChangedAt: Date,
         passwordResetCode: String,
         passwordResetVerified: Boolean,

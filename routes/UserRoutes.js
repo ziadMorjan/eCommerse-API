@@ -32,7 +32,7 @@ const {
     resizeUserImage,
     changePassword,
     deleteMe
-} = require("../controllers/userController");
+} = require("../controllers/UserController");
 
 let router = express.Router();
 
