@@ -1,5 +1,7 @@
-const mongoose = require('mongoose');
 const bcryptjs = require('bcryptjs');
+const mongoose = require('mongoose');
+const addressSchema = require("./Address");
+
 let userSchema = new mongoose.Schema(
     {
         name: {
@@ -46,7 +48,8 @@ let userSchema = new mongoose.Schema(
         isActive: {
             type: Boolean,
             default: true,
-        }
+        },
+        addresses: [addressSchema]
     },
     {
         timestamps: true,
@@ -55,8 +58,10 @@ let userSchema = new mongoose.Schema(
 
 let setImageUrl = function (doc) {
     if (doc.profileImage) {
-        let url = `${process.env.BASE_URL}/users/${doc.profileImage}`;
-        doc.profileImage = url;
+        if (!doc.profileImage.startWith("http")) {
+            let url = `${process.env.BASE_URL}/users/${doc.profileImage}`;
+            doc.profileImage = url;
+        }
     }
 };
 
