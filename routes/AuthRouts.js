@@ -1,4 +1,6 @@
 const express = require("express");
+const passport = require('passport');
+const { createToken } = require('../utils/JWTs');
 const {
     signup,
     login,
@@ -14,36 +16,39 @@ const {
     resetPasswordValidator
 } = require("../utils/validators/authValidators");
 
-let router = express.Router();
+const router = express.Router();
 
-router.route("/signup")
-    .post(
-        signupValidator,
-        signup
-    );
+// OAuth Handlers
+const oAuthCallbackHandler = (req, res) => {
+    const token = createToken(req.user.id);
+    res.status(201).json({
+        status: "success",
+        user: req.user,
+        token
+    });
+};
 
-router.route("/login")
-    .post(
-        loginValidator,
-        login
-    );
+// Google OAuth
+router.get("/google", passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get("/google/callback",
+    passport.authenticate('google', { session: false, failureRedirect: '/' }),
+    oAuthCallbackHandler
+);
 
-router.route("/forgetPassword")
-    .post(
-        forgetPasswordValidator,
-        forgetPassword
-    );
+// Facebook OAuth
+router.get("/facebook", passport.authenticate('facebook', { scope: ['email'] }));
+router.get("/facebook/callback",
+    passport.authenticate('facebook', { session: false, failureRedirect: '/' }),
+    oAuthCallbackHandler
+);
 
-router.route("/verifyResetCode")
-    .post(
-        verifyResetCodeValidator,
-        verifyResetCode
-    );
+// Auth Routes
+router.post("/signup", signupValidator, signup);
+router.post("/login", loginValidator, login);
 
-router.route("/resetPassword")
-    .patch(
-        resetPasswordValidator,
-        resetPassword
-    );
+// --- Password Reset Routes ---
+router.post("/forgetPassword", forgetPasswordValidator, forgetPassword);
+router.post("/verifyResetCode", verifyResetCodeValidator, verifyResetCode);
+router.patch("/resetPassword", resetPasswordValidator, resetPassword);
 
 module.exports = router;

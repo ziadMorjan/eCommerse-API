@@ -1,5 +1,9 @@
 const express = require("express");
 const morgan = require("morgan");
+const passport = require('passport');
+
+// import strategy
+const strategies = require('./config/passport');
 
 const CategoriesRoutes = require("./routes/CategoriesRoutes");
 const SubCategoriesRoutes = require("./routes/SubCategoriesRoutes");
@@ -15,10 +19,15 @@ const { globalErrorHandler } = require("./middlewares/errorMiddleware");
 
 let app = express();
 
+// use strategies
+passport.use(strategies.googleStrategy);
+passport.use(strategies.facebookStrategy);
+
 // middlewares
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.static("uploads"));
+app.use(passport.initialize());
 
 // routes
 app.use("/api/v1/categories", CategoriesRoutes);

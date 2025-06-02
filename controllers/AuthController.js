@@ -7,6 +7,27 @@ const { asyncErrorHandler } = require("../middlewares/errorMiddleware");
 const { createToken } = require("../utils/JWTs");
 const { sendResetPasswordEmail } = require("../utils/emails");
 
+let sendRes = function (res, statusCode, user) {
+    let token = createToken(user.id);
+
+    let options = {
+        httpOnly: true,
+        sameSite: "strict", // CSRF protection
+        maxAge: parseInt(process.env.JWT_EXPIRES_IN, 10) * 24 * 60 * 60 * 1000
+    }
+
+    if (process.env.NODE_ENV === "production")
+        options.secure = true;
+
+    res.cookie("token", token, options);
+
+    res.status(statusCode).json({
+        status: "success",
+        user,
+        token
+    });
+}
+
 let signup = asyncErrorHandler(async function (req, res) {
     if (req.body.role === "admin")
         throw new CustomError("You can not signup as an admin!", 403);
@@ -15,13 +36,9 @@ let signup = asyncErrorHandler(async function (req, res) {
 
     let user = await User.create(req.body);
 
-    let token = createToken(user.id);
+    user.password = undefined; // remove password from response
 
-    res.status(201).json({
-        status: "success",
-        user,
-        token
-    });
+    sendRes(res, 201, user);
 });
 
 let login = asyncErrorHandler(async function (req, res) {
@@ -36,12 +53,7 @@ let login = asyncErrorHandler(async function (req, res) {
     if (!user.isActive)
         throw new CustomError("Your account has been deactivated", 403);
 
-    let token = createToken(user.id);
-
-    res.status(200).json({
-        status: "success",
-        token
-    });
+    sendRes(res, 200, user);
 });
 
 let forgetPassword = asyncErrorHandler(async function (req, res) {
@@ -111,12 +123,7 @@ let resetPassword = asyncErrorHandler(async function (req, res) {
     user.passwordResetVerified = undefined;
     await user.save();
 
-    let token = createToken(user.id);
-
-    res.status(200).json({
-        status: "success",
-        token
-    });
+    sendRes(res, 200, user);
 });
 
 module.exports = {

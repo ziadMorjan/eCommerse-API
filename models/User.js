@@ -13,6 +13,8 @@ let userSchema = new mongoose.Schema(
             type: String,
             lowercase: true,
         },
+        googleId: String,
+        facebookId: String,
         email: {
             type: String,
             required: [true, 'Email is required'],
@@ -27,7 +29,6 @@ let userSchema = new mongoose.Schema(
         profileImage: String,
         password: {
             type: String,
-            required: [true, 'Password is required'],
             trim: true,
             minlength: [6, 'Password must be at least 6 characters long'],
             select: false,
