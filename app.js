@@ -14,8 +14,10 @@ const authRoutes = require("./routes/AuthRouts");
 const reviewsRoutes = require("./routes/ReviewRoutes");
 const wishlistRoutes = require("./routes/WishlistRouts");
 const addressesRoutes = require("./routes/AddressRouts");
+const CouponRout = require("./routes/CouponRoutes");
 const DefaultRoute = require("./routes/DefaultRoute");
-const { globalErrorHandler } = require("./middlewares/errorMiddleware");
+
+const { globalErrorHandler } = require("./middlewares/ErrorMiddleware");
 
 let app = express();
 
@@ -39,6 +41,7 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/reviews", reviewsRoutes);
 app.use("/api/v1/wishlist", wishlistRoutes);
 app.use("/api/v1/addresses", addressesRoutes);
+app.use("/api/v1/coupons", CouponRout);
 
 // default route
 app.use(DefaultRoute)

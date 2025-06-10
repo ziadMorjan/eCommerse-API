@@ -34,14 +34,15 @@ let createProductValidator = [
         .notEmpty().withMessage("product price is required.")
         .isNumeric().withMessage("product price must be number."),
 
-    // validator.check("priceAfterDiscount")
-    //     .optional()
-    //     .isNumeric().withMessage("product priceAfterDiscount must be number.")
-    //     .custom((value, { req }) => {
-    //         if (value > req.body.price)
-    //             throw new Error("priceAfterDiscount must be less than price");
-    //     })
-    //     .toFloat(),
+    validator.check("priceAfterDiscount")
+        .optional()
+        .isNumeric().withMessage("product priceAfterDiscount must be number.")
+        .custom((value, { req }) => {
+            if (value > req.body.price)
+                throw new Error("priceAfterDiscount must be less than price");
+            return true;
+        })
+        .toFloat(),
 
     validator.check("colors")
         .optional()
@@ -62,6 +63,7 @@ let createProductValidator = [
             if (!category) {
                 throw new Error("The provided category is not exist in the db.");
             }
+            return true;
         }),
 
     validator.check("subCategory")
@@ -71,6 +73,7 @@ let createProductValidator = [
             let result = subCategoryIds.every(id => validator.check(id).isMongoId());
             if (!result)
                 throw new Error(`One or more invalid subCategory id format.`);
+            return true;
         })
         .custom(async (subCategoryIds, { req }) => {
             let promises = subCategoryIds.map(id => SubCategory.findById(id));
@@ -81,6 +84,7 @@ let createProductValidator = [
             let categories = subCategories.map(subCategory => subCategory.category);
             if (!categories.every(category => category == req.body.category))
                 throw new Error("One or more provided subCategory does not belong to the provided category.");
+            return true;
         }),
 
     validator.check("brand")
@@ -91,6 +95,7 @@ let createProductValidator = [
             if (!brand) {
                 throw new Error("The provided brand is not exist in the db.");
             }
+            return true;
         }),
 
     validator.check("avgRatings")
@@ -128,15 +133,16 @@ let updateProductValidator = [
         .optional()
         .isNumeric().withMessage("product price must be number."),
 
-    // validator.check("priceAfterDiscount")
-    //     .optional()
-    //     .isNumeric().withMessage("product priceAfterDiscount must be number.")
-    //     .custom((value, { req }) => {
-    //         if (req.body.price)
-    //             if (value > req.body.price)
-    //                 throw new Error("priceAfterDiscount must be less than price");
-    //     })
-    //     .toFloat(),
+    validator.check("priceAfterDiscount")
+        .optional()
+        .isNumeric().withMessage("product priceAfterDiscount must be number.")
+        .custom((value, { req }) => {
+            if (req.body.price)
+                if (value > req.body.price)
+                    throw new Error("priceAfterDiscount must be less than price");
+            return true;
+        })
+        .toFloat(),
 
     validator.check("colors")
         .optional()
@@ -156,6 +162,7 @@ let updateProductValidator = [
             let category = await Category.findById(categoryId);
             if (!category)
                 throw new Error("The provided Category is not exist in the db.");
+            return true;
         }),
 
     validator.check("subCategory")
@@ -165,6 +172,7 @@ let updateProductValidator = [
             let result = subCategoryIds.every(id => validator.check(id).isMongoId());
             if (result)
                 throw new Error(`One or more invalid subCategory id format.`);
+            return true;
         })
         .custom(async (subCategoryIds, { req }) => {
             let promises = subCategoryIds.map(id => SubCategory.findById(id));
@@ -175,6 +183,7 @@ let updateProductValidator = [
             let categories = subCategories.map(subCategory => subCategory.category);
             if (!categories.every(category => category == req.body.category))
                 throw new Error("One or more provided subCategory does not belong to the provided category.");
+            return true;
         }),
 
     validator.check("brand")
@@ -185,6 +194,7 @@ let updateProductValidator = [
             if (!brand) {
                 throw new Error("The provided brand is not exist in the db.");
             }
+            return true;
         }),
 
     validator.check("avgRatings")

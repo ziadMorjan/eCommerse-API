@@ -22,6 +22,7 @@ let createSubCategoryValidator = [
             let category = await Category.findById(categoryID);
             if (!category)
                 throw new Error("The provided category is not exist in the db.");
+            return true;
         }),
 
     validator.check("categoryId")
@@ -32,6 +33,7 @@ let createSubCategoryValidator = [
             let category = await Category.findById(categoryID);
             if (!category)
                 throw new Error("The provided category is not exist in the db.");
+            return true;
         }),
 
     validationMiddleware
@@ -53,6 +55,7 @@ let updateSubCategoryValidator = [
             let category = await Category.findById(categoryID);
             if (!category)
                 throw new Error("The provided category is not exist in the db.");
+            return true;
         }),
 
     validationMiddleware
