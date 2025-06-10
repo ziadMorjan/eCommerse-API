@@ -9,7 +9,7 @@ const {
     deleteOne
 } = require("./Controller");
 const { uploadMultipleImages } = require("../middlewares/uploadImagesMiddleware");
-const { asyncErrorHandler } = require("../middlewares/errorMiddleware");
+const { asyncErrorHandler } = require("../middlewares/ErrorMiddleware");
 
 
 let uploadMixImages = uploadMultipleImages([

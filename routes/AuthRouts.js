@@ -15,17 +15,39 @@ const {
     verifyResetCodeValidator,
     resetPasswordValidator
 } = require("../utils/validators/authValidators");
+const { parseDuration } = require("../utils/parseDuration");
 
 const router = express.Router();
 
 // OAuth Handlers
 const oAuthCallbackHandler = (req, res) => {
-    const token = createToken(req.user.id);
-    res.status(201).json({
-        status: "success",
-        user: req.user,
-        token
-    });
+    let token = createToken(req.user.id);
+        let maxAge;
+    
+        try {
+            maxAge = parseDuration(process.env.JWT_EXPIRES_IN);
+        } catch (error) {
+            console.error('Error parsing JWT_EXPIRES_IN:', error.message);
+            maxAge = 7 * 24 * 60 * 60 * 1000; // fallback 7 days
+        }
+    
+        let options = {
+            httpOnly: true,
+            sameSite: 'strict',
+            maxAge
+        };
+    
+    
+        if (process.env.NODE_ENV === "production")
+            options.secure = true;
+    
+        res.cookie("token", token, options);
+    
+        res.status(200).json({
+            status: "success",
+            user:req.user,
+            token
+        });
 };
 
 // Google OAuth

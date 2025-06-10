@@ -3,18 +3,28 @@ const bcryptjs = require("bcryptjs");
 const { default: slugify } = require("slugify");
 const User = require("../models/User");
 const CustomError = require("../utils/CustomError");
-const { asyncErrorHandler } = require("../middlewares/errorMiddleware");
+const { asyncErrorHandler } = require("../middlewares/ErrorMiddleware");
 const { createToken } = require("../utils/JWTs");
 const { sendResetPasswordEmail } = require("../utils/emails");
+const { parseDuration } = require("../utils/parseDuration");
 
 let sendRes = function (res, statusCode, user) {
     let token = createToken(user.id);
+    let maxAge;
+
+    try {
+        maxAge = parseDuration(process.env.JWT_EXPIRES_IN);
+    } catch (error) {
+        console.error('Error parsing JWT_EXPIRES_IN:', error.message);
+        maxAge = 7 * 24 * 60 * 60 * 1000; // fallback 7 days
+    }
 
     let options = {
         httpOnly: true,
-        sameSite: "strict", // CSRF protection
-        maxAge: parseInt(process.env.JWT_EXPIRES_IN, 10) * 24 * 60 * 60 * 1000
-    }
+        sameSite: 'strict',
+        maxAge
+    };
+
 
     if (process.env.NODE_ENV === "production")
         options.secure = true;

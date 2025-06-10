@@ -1,5 +1,5 @@
 const { default: slugify } = require("slugify");
-const { asyncErrorHandler } = require("../middlewares/errorMiddleware");
+const { asyncErrorHandler } = require("../middlewares/ErrorMiddleware");
 const QueryManipulater = require("../utils/QueryManipulater");
 const CustomError = require("../utils/CustomError");
 

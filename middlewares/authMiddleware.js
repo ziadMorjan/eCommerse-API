@@ -2,14 +2,27 @@
 const User = require("../models/User");
 const CustomError = require("../utils/CustomError");
 const { verifyToken } = require("../utils/JWTs");
-const { asyncErrorHandler } = require("./errorMiddleware");
+const { asyncErrorHandler } = require("./ErrorMiddleware");
 
 const protect = asyncErrorHandler(async function (req, res, next) {
     // check if token is exist
-    let authHeder = req.headers.Authorization || req.headers.authorization;
     let token;
+    let authHeder = req.headers.Authorization || req.headers.authorization;
+    let authCookie = req.headers.cookie;
+    
+    if (authCookie && authCookie.startsWith("token=")) {
+        token = authCookie.split("token=")[1];
+        if (token.includes(";")) {
+            token = token.split(";")[0];
+        }
+    }
+    
+    if ((req.cookies && req.cookies.token)) 
+        ({token} = req.cookies);
+    
     if (authHeder && authHeder.startsWith("Bearer"))
         token = authHeder.split(" ")[1];
+    
     if (!token)
         throw new CustomError("Invalid or no token sent, please login!", 401);
 

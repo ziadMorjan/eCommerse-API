@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const { asyncErrorHandler } = require("../middlewares/errorMiddleware");
+const { asyncErrorHandler } = require("../middlewares/ErrorMiddleware");
 
 const addToWishlist = asyncErrorHandler(async function (req, res) {
     let user = await User.findByIdAndUpdate(req.user.id,

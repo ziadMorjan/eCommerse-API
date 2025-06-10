@@ -13,7 +13,7 @@ const {
 const { createToken } = require("../utils/JWTs")
 
 const { uploadSingleImage } = require("../middlewares/uploadImagesMiddleware");
-const { asyncErrorHandler } = require("../middlewares/errorMiddleware");
+const { asyncErrorHandler } = require("../middlewares/ErrorMiddleware");
 const CustomError = require("../utils/CustomError");
 
 

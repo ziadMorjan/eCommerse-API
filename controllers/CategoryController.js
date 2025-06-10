@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const sharp = require("sharp");
 const Category = require("../models/Category");
-const { asyncErrorHandler } = require("../middlewares/errorMiddleware");
+const { asyncErrorHandler } = require("../middlewares/ErrorMiddleware");
 const {
     getAll,
     getOne,

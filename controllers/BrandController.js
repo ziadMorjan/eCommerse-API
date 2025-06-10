@@ -11,7 +11,7 @@ const {
 const {
     uploadSingleImage
 } = require("../middlewares/uploadImagesMiddleware");
-const { asyncErrorHandler } = require("../middlewares/errorMiddleware");
+const { asyncErrorHandler } = require("../middlewares/ErrorMiddleware");
 
 let uploadImage = uploadSingleImage("photo");
 

@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const { asyncErrorHandler } = require("../middlewares/errorMiddleware");
+const { asyncErrorHandler } = require("../middlewares/ErrorMiddleware");
 const CustomError = require("../utils/CustomError");
 
 const getUserAddresses = asyncErrorHandler(async function (req, res) {

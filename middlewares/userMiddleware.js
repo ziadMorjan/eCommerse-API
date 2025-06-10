@@ -1,5 +1,5 @@
 const CustomError = require("../utils/CustomError");
-const { asyncErrorHandler } = require("./errorMiddleware");
+const { asyncErrorHandler } = require("./ErrorMiddleware");
 
 let removePasswordFromReqBody = function (req, res, next) {
     if (req.body.password) {
