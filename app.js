@@ -5,19 +5,10 @@ const passport = require('passport');
 // import strategy
 const strategies = require('./config/passport');
 
-const CategoriesRoutes = require("./routes/CategoriesRoutes");
-const SubCategoriesRoutes = require("./routes/SubCategoriesRoutes");
-const brandsRoutes = require("./routes/BrandsRoutes");
-const productRoutes = require("./routes/ProductRoutes");
-const userRoutes = require("./routes/UserRoutes");
-const authRoutes = require("./routes/AuthRouts");
-const reviewsRoutes = require("./routes/ReviewRoutes");
-const wishlistRoutes = require("./routes/WishlistRouts");
-const addressesRoutes = require("./routes/AddressRouts");
-const CouponRout = require("./routes/CouponRoutes");
-const CartRout = require("./routes/CartRouts");
-const DefaultRoute = require("./routes/DefaultRoute");
+// import routes
+const routes = require("./routes");
 
+// import globalErrorHandler
 const { globalErrorHandler } = require("./middlewares/ErrorMiddleware");
 
 let app = express();
@@ -33,20 +24,7 @@ app.use(express.static("uploads"));
 app.use(passport.initialize());
 
 // routes
-app.use("/api/v1/categories", CategoriesRoutes);
-app.use("/api/v1/subCategories", SubCategoriesRoutes);
-app.use("/api/v1/brands", brandsRoutes);
-app.use("/api/v1/products", productRoutes);
-app.use("/api/v1/users", userRoutes);
-app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/reviews", reviewsRoutes);
-app.use("/api/v1/wishlist", wishlistRoutes);
-app.use("/api/v1/addresses", addressesRoutes);
-app.use("/api/v1/coupons", CouponRout);
-app.use("/api/v1/cart", CartRout);
-
-// default route
-app.use(DefaultRoute)
+routes(app);
 
 app.use(globalErrorHandler);
 
