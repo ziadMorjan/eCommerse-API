@@ -15,6 +15,7 @@ const reviewsRoutes = require("./routes/ReviewRoutes");
 const wishlistRoutes = require("./routes/WishlistRouts");
 const addressesRoutes = require("./routes/AddressRouts");
 const CouponRout = require("./routes/CouponRoutes");
+const CartRout = require("./routes/CartRouts");
 const DefaultRoute = require("./routes/DefaultRoute");
 
 const { globalErrorHandler } = require("./middlewares/ErrorMiddleware");
@@ -42,6 +43,7 @@ app.use("/api/v1/reviews", reviewsRoutes);
 app.use("/api/v1/wishlist", wishlistRoutes);
 app.use("/api/v1/addresses", addressesRoutes);
 app.use("/api/v1/coupons", CouponRout);
+app.use("/api/v1/cart", CartRout);
 
 // default route
 app.use(DefaultRoute)
