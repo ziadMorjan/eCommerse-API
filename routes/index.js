@@ -10,6 +10,7 @@ const addressesRoutes = require("./AddressRouts");
 const CouponRout = require("./CouponRoutes");
 const CartRout = require("./CartRouts");
 const OrderRout = require("./OrderRouts");
+const PaymentRout = require("./PaymentRoutes");
 const DefaultRoute = require("./DefaultRoute");
 
 module.exports = (app) => {
@@ -25,6 +26,7 @@ module.exports = (app) => {
     app.use("/api/v1/coupons", CouponRout);
     app.use("/api/v1/cart", CartRout);
     app.use("/api/v1/orders", OrderRout);
+    app.use("/api/v1/payment", PaymentRout);
 
     // default route
     app.use(DefaultRoute)

@@ -17,6 +17,9 @@ let app = express();
 passport.use(strategies.googleStrategy);
 passport.use(strategies.facebookStrategy);
 
+const { webhook } = require("./controllers/PaymentController");
+app.post("/api/v1/webhook", express.raw({ type: "application/json" }), webhook);
+
 // middlewares
 app.use(morgan("dev"));
 app.use(express.json());

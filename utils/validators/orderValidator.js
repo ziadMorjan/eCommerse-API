@@ -7,10 +7,16 @@ const Order = require("../../models/Order");
 const createOrderValidator = [
     validator.check("user")
         .custom(async (value, { req }) => {
-            const cart = await Cart.findOne({ user: req.user.id });
+            const cart = await Cart.findOne({ user: req.user.id }).populate("cartItems.product");
 
             if (!cart || cart.cartItems.length === 0)
                 throw new CustomError("The cart is empty", 400);
+
+            cart.cartItems.forEach(item => {
+
+                if (item.product.quantity < item.quantity)
+                    throw new CustomError(`There is no enough quantity for the ${item.color} ${item.product.name}`, 400);
+            });
             return true;
         }),
 

@@ -2,7 +2,6 @@ const Order = require("../models/Order");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
 const { asyncErrorHandler } = require("../middlewares/ErrorMiddleware");
-const CustomError = require("../utils/CustomError");
 const {
     getAll,
     getOne,
@@ -14,14 +13,7 @@ const createOrder = asyncErrorHandler(async function (req, res, next) {
     // 1- find cart
     const cart = await Cart.findOne({ user: req.user.id });
 
-    // 2- check quirites that exist
-    cart.cartItems.forEach(async item => {
-        let product = await Product.findOne(item.product);
-        if (product.quantity < item.quantity)
-            next(new CustomError(`There is no enough quantity for the ${item.color} ${product.name}`, 400));
-    });
-
-    // 3- create Order
+    // 2- create Order
     let orderBody = {
         user: cart.user,
         cartItems: cart.cartItems,
@@ -36,10 +28,10 @@ const createOrder = asyncErrorHandler(async function (req, res, next) {
 
     const order = await Order.create(orderBody);
 
-    // 4- decrement quantities & increment sold
+    // 3- decrement quantities & increment sold
     cart.cartItems.forEach(async item => await Product.findOneAndUpdate(item.product, { $inc: { quantity: -item.quantity, sold: item.quantity } }));
 
-    // 5- clear Cart
+    // 4- clear Cart
     await Cart.findByIdAndDelete(cart.id);
 
     res.status(201).json({
