@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const fs = require("fs");
 
 let productSchema = new mongoose.Schema(
     {
@@ -117,6 +118,18 @@ productSchema.virtual("reviews", {
     ref: "Review",
     foreignField: "product",
     localField: "_id"
+});
+
+productSchema.post(/delete/, async function (doc, next) {
+    if (doc.coverImage) {
+        if (!doc.coverImage.startsWith("http")) {
+            fs.unlink(doc.coverImage, (err) => {
+                if (err)
+                    console.log(err.message);
+            })
+        }
+    }
+    next();
 });
 
 module.exports = mongoose.model("Product", productSchema);

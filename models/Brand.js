@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const fs = require("fs");
 
 let brandSchema = new mongoose.Schema(
     {
@@ -30,5 +31,17 @@ let setImageUrl = function (doc) {
 brandSchema.post("init", doc => setImageUrl(doc));
 
 brandSchema.post("save", doc => setImageUrl(doc));
+
+brandSchema.post(/delete/, async function (doc, next) {
+    if (doc.photo) {
+        if (!doc.photo.startsWith("http")) {
+            fs.unlink(doc.photo, (err) => {
+                if (err)
+                    console.log(err.message);
+            })
+        }
+    }
+    next();
+});
 
 module.exports = mongoose.model("Brand", brandSchema);

@@ -1,4 +1,5 @@
 const bcryptjs = require('bcryptjs');
+const fs = require("fs");
 const mongoose = require('mongoose');
 const addressSchema = require("./Address");
 
@@ -59,7 +60,7 @@ let userSchema = new mongoose.Schema(
 
 let setImageUrl = function (doc) {
     if (doc.profileImage) {
-        if (!doc.profileImage.startWith("http")) {
+        if (!doc.profileImage.startsWith("http")) {
             let url = `${process.env.BASE_URL}/users/${doc.profileImage}`;
             doc.profileImage = url;
         }
@@ -77,5 +78,17 @@ userSchema.pre('save', function (next) {
 userSchema.post('init', doc => setImageUrl(doc));
 
 userSchema.post('save', doc => setImageUrl(doc));
+
+userSchema.post(/delete/, async function (doc, next) {
+    if (doc.profileImage) {
+        if (!doc.profileImage.startsWith("http")) {
+            fs.unlink(doc.profileImage, (err) => {
+                if (err)
+                    console.log(err.message);
+            })
+        }
+    }
+    next();
+});
 
 module.exports = mongoose.model('User', userSchema);

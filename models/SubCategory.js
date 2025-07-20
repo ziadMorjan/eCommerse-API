@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const fs = require("fs");
 
 let subCategorySchema = new mongoose.Schema(
     {
@@ -37,5 +38,16 @@ subCategorySchema.post("init", doc => setImageUrl(doc));
 
 subCategorySchema.post("save", doc => setImageUrl(doc));
 
+subCategorySchema.post(/delete/, async function (doc, next) {
+    if (doc.photo) {
+        if (!doc.photo.startsWith("http")) {
+            fs.unlink(doc.photo, (err) => {
+                if (err)
+                    console.log(err.message);
+            })
+        }
+    }
+    next();
+});
 
 module.exports = mongoose.model("SubCategory", subCategorySchema);

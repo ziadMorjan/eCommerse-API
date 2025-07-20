@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const fs = require("fs");
 
 let categorySchema = new mongoose.Schema(
     {
@@ -31,5 +32,16 @@ categorySchema.post("init", doc => setImageUrl(doc));
 
 categorySchema.post("save", doc => setImageUrl(doc));
 
+categorySchema.post(/delete/, async function (doc, next) {
+    if (doc.photo) {
+        if (!doc.photo.startsWith("http")) {
+            fs.unlink(doc.photo, (err) => {
+                if (err)
+                    console.log(err.message);
+            })
+        }
+    }
+    next();
+});
 
 module.exports = mongoose.model("Category", categorySchema);
