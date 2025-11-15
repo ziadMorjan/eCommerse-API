@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const passport = require('passport');
+const cors = require('cors');
 const toobusy = require('toobusy-js');
 const expressLimit = require("express-rate-limit");
 const hpp = require('hpp');
@@ -36,6 +37,12 @@ const authLimiter = expressLimit({
 });
 
 // middlewares
+app.use(
+    cors({
+        origin: process.env.CLIENT_URL || 'http://localhost:3000',
+        credentials: true,
+    })
+);
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true, limit: "1kb" }));
